@@ -1,0 +1,17 @@
+Bundle enrichment method (BEM-DC) is an algorithm for solving nonsmooth difference of convex (DC) programming problems. 
+The novelty of the method consists of the dynamic management of the bundle. More specifically, a DC model, being the 
+difference of two convex piecewise affine functions is formulated. The (global) minimization of the model is tackled 
+by solving a set of convex problems whose cardinality depends on the number of linearizations adopted to approximate 
+the second DC component function. The new bundle management policy distributes the information coming from previous 
+iterations to separately model the DC components of the objective function. Such a distribution is driven by sign of 
+linearization errors. If the displacement suggested by the model minimization provides no sufficient decrease of the 
+objective function, then the temporary enrichment of the cutting plane approximation of just the first DC component 
+function takes a place until either the termination of the algorithm is certified or a sufficient decrease is achieved. 
+The most remarkable feature of the \DCPL is that it uses less subgradient evaluations of the second DC components than 
+any other method. This feature makes the proposed method different from other methods.
+
+
+	
+
+References
+M. Gaudioso, S. Taheri, A. Bagirov, N. Karmitsa, "Bundle enrichment method for nonsmooth DC programming", submitted, 2022. 
