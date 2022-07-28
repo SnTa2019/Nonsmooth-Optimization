@@ -38,4 +38,4 @@ plqdf1.o: plqdf1.f
 
 clean:	
 	$(RM) bem *.mod *.o  
-	echo Clean done
+	echo Clean done 
