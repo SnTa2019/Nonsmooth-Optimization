@@ -4,7 +4,7 @@
 !*     nonsmooth difference of convex (DC) programming problems          *
                                                                       
 !*     by Napsu Karmitsa, Adil Bagirov and Sona Taheri                   *
-!*     (last modified 02.02.2022).
+!*     (last modified 28.07.2022).
 !*     The code is partly based on the code snippets by Kaisa Joki       *
 !*     and it uses a quadratic solver by Ladislav Luksan.                *
 
