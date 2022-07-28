@@ -1,42 +1,41 @@
 !*************************************************************************
-!*                                                                       *
-!*     Computation of the value of the DC objective functions f1 and f2  *
-!*     and the correbonding subgradients (given by user).                *
-!*                                                                       *
-!*     Called from subroutine bemdc (last modified 02.02.2022)           * 
-!*                                                                       *
+!*                                                                      
+!*     Computation of the value of the DC objective functions f1 and f2  
+!*     and the correbonding subgradients (given by user).                
+!*     Problems 1-14 are from DBDC aricle
+!*     Problems 15-17 are from COAP aricle                                                          
+!*     Called from subroutine bemdc (last modified 28.07.2022)            
+!*                                                                       
 !*************************************************************************
 !*
 !*     Modules included:
 !*
-!*     functions         !
+!*     functions         
 !*
 
-MODULE functions ! Computation of the value and the subgradient of the 
-                 ! objective function.
+MODULE functions                                         ! Computation of the value and the subgradient of the objective function.
 
-    USE r_precision, ONLY : prec             ! Precision for reals.
-    USE param, ONLY : zero, one, two, large  ! Parameters.
+    USE r_precision, ONLY : prec                      ! Precision for reals.
+    USE param, ONLY : zero, one, two, large     ! Parameters.
     
     IMPLICIT NONE
 
     PUBLIC :: &
-        init_x, & ! Starting point.
-        myf1, &   ! Computation of the value of the objective f1.
-        myg1, &   ! Computation of the subgradient of the objective f1.
-        myf2      ! Computation of the value of the objective f2.
+        init_x, &                                                   ! Starting point.
+        myf1, &                                                    ! Computation of the value of the objective f1.
+        myg1, &                                                   ! Computation of the subgradient of the objective f1.
+        myf2                                                        ! Computation of the value of the objective f2.
        
         
 CONTAINS
 
-    SUBROUTINE init_x()     ! User supplied subroutine for initialization of vector x(n).
-                            ! Includes now starting points for test problems.
+    SUBROUTINE init_x()                                 ! User supplied subroutine for initialization of vector x(n).
+                                                                        ! Includes now starting points for test problems.
     
     USE initbem, ONLY : &
-        n, &      ! the number of variables.
-        x, &      ! the vector of variables. 
-        sp        ! Number of the starting point, sp = 1,...,5 
-                  ! in academic test examples.
+        n, &                                                         ! the number of variables.
+        x, &                                                         ! the vector of variables. 
+        sp                                                            ! Number of the starting point, sp = 1,...,5 in academic test examples.
 
         IMPLICIT NONE
         INTEGER :: i
@@ -46,10 +45,12 @@ CONTAINS
         SELECT CASE(sp)          
          
 !=======================================================================
-
             CASE(1)  
+            
             x(1)=2.0_prec
             x(2)=2.0_prec
+            x(1)=-7.2379_prec
+            x(2)=8.0902_prec
 !=======================================================================                             
             CASE(2)  
             
@@ -129,6 +130,24 @@ CONTAINS
             do i=1,n
               x(i)=1.0_prec
             end do             
+!=======================================================================
+            CASE(15)
+            
+            do i=1,n
+              x(i)=3.0_prec
+            end do             
+!=======================================================================  
+            CASE(16)
+            
+            do i=1,n
+              x(i)=2.0_prec
+            end do
+!=======================================================================  
+            CASE(17)
+            
+            do i=1,n
+              x(i)=2.0_prec
+            end do             
 !=======================================================================  
             
         END SELECT        
@@ -136,34 +155,34 @@ CONTAINS
     END SUBROUTINE init_x
 
     !************************************************************************
-    !*                                                                      *
-    !*     * SUBROUTINE myf1 *                                              *
-    !*                                                                      *
-    !*     Computation of the value of the objective f1.                    *
-    !*                                                                      *
+    !*                                                                      
+    !*     * SUBROUTINE myf1 *                                             
+    !*                                                                      
+    !*     Computation of the value of the objective f1.                    
+    !*                                                                      
     !************************************************************************
      
     SUBROUTINE myf1(n,x,f,iterm)
 
-        USE param, ONLY : zero,one,two,large  ! Parameters.
-        USE initbem, ONLY : pnf1              ! Switch for convex component function f1 
-                                              ! in academic test examples.
+        USE param, ONLY : zero,one,two,large    ! Parameters.
+        USE initbem, ONLY : pnf1                       ! Switch for convex component function f1 in academic test examples.
+                                              
 
         IMPLICIT NONE
 
         ! Array Arguments
         REAL(KIND=prec), DIMENSION(n), INTENT(IN) :: &
-            x  ! Vector of variables.
+            x                                                          ! Vector of variables.
 
         ! Scalar Arguments
-        REAL(KIND=prec), INTENT(OUT) :: f  ! Value of the function.
-        INTEGER, INTENT(IN) :: n           ! Number of variables.
-        INTEGER, INTENT(OUT) :: iterm      ! Cause of termination:
-                                           !   0  - Everything is ok.
-                                           !  -3  - Failure in function calculations
-        REAL(KIND=prec) :: apu , largest   ! help variable                                        
-        REAL(KIND=prec) :: a1,a2,a3,a4,a5,a6        ! help variables
-        INTEGER :: i, j                             ! help variable
+        REAL(KIND=prec), INTENT(OUT) :: f       ! Value of the function.
+        INTEGER, INTENT(IN) :: n                      ! Number of variables.
+        INTEGER, INTENT(OUT) :: iterm             ! Cause of termination:
+                                                                        !   0  - Everything is ok.
+                                                                        !  -3  - Failure in function calculations
+        REAL(KIND=prec) :: apu , largest            ! help variable                                        
+        REAL(KIND=prec) :: a1,a2,a3,a4,a5,a6   ! help variables
+        INTEGER :: i, j                                        ! help variable
         REAL(KIND=prec), DIMENSION(4) :: a            
           
                 
@@ -223,10 +242,9 @@ CONTAINS
 		END IF
 		END DO
 		f = n * apu  
-	
-!=======================================================================      
-	
+!=======================================================================  
 	   CASE(5)
+	   
 		apu = ABS(summa(x,1,n)) 
 		DO j = 2, 20
 		IF (apu <= ABS(summa(x,j,n)) ) THEN 
@@ -354,9 +372,43 @@ CONTAINS
 		 
 		 f = n * largest   
 !=======================================================================  
-    
+    CASE(15)   
+
+         f = 0.0_prec
+         do i=1,n-1
+          a1 = (x(i)-2.0_prec)**2+(x(i+1)-1.0_prec)**2
+          a2 = exp(2.0_prec*x(i)-x(i+1))
+          f =f+a1+a2
+         end do
+!======================================================================= 
+    CASE(16)   
+
+         a1=-1.0_prec
+         do i=1,n
+          a2=0.0_prec
+          do j=1,n
+           a2 = a2+x(j)**2/(i+j-1)
+          end do
+          a1 = MAX(a1,a2)
+         end do
+         f=n*a1
+!======================================================================= 
+    CASE(17)   
+
+         a1=-1.0_prec
+         do i=1,n
+          a2=0.0_prec
+          do j=1,n
+           a2 = a2+x(j)/(i+j-1)
+          end do
+          a2=abs(a2)
+          if(a2 > a1) then
+           a1=a2
+          end if       
+         end do
+         f=n*a1
+
         END SELECT
- 
  
     
         RETURN
@@ -364,34 +416,33 @@ CONTAINS
     END SUBROUTINE myf1
 
     !************************************************************************
-    !*                                                                      *
-    !*     * SUBROUTINE myf2 *                                              *
-    !*                                                                      *
-    !*     Computation of the value of the objective f2.                    *
-    !*                                                                      *
+    !*                                                                      
+    !*     * SUBROUTINE myf2 *                                              
+    !*                                                                      
+    !*     Computation of the value of the objective f2.                    
+    !*                                                                      
     !************************************************************************
      
     SUBROUTINE myf2(n,x,f,iterm)
 
         USE param, ONLY : zero,one,two,large    ! Parameters.
-        USE initbem, ONLY : pnf2                ! Switch for convex component function 
-                                                ! f2 in academic test examples.
+        USE initbem, ONLY : pnf2                       ! Switch for convex component function f2 in academic test examples.
 
         IMPLICIT NONE
 
         ! Array Arguments
         REAL(KIND=prec), DIMENSION(n), INTENT(IN) :: &
-            x  ! Vector of variables.
+            x                                                          ! Vector of variables.
 
         ! Scalar Arguments
-        REAL(KIND=prec), INTENT(OUT) :: f  ! Value of the function.
-        INTEGER, INTENT(IN) :: n           ! Number of variables.
-        INTEGER, INTENT(OUT) :: iterm      ! Cause of termination:
-                                           !   0  - Everything is ok.
-                                           !  -3  - Failure in function calculations
-        REAL(KIND=prec) :: apu, largest    ! help variable                                           
+        REAL(KIND=prec), INTENT(OUT) :: f       ! Value of the function.
+        INTEGER, INTENT(IN) :: n                      ! Number of variables.
+        INTEGER, INTENT(OUT) :: iterm            ! Cause of termination:
+                                                                        !   0  - Everything is ok.
+                                                                        !  -3  - Failure in function calculations
+        REAL(KIND=prec) :: apu, largest             ! help variable                                           
         REAL(KIND=prec) :: a2,a1,a4,a5,a6 
-        INTEGER :: i, j, ind               ! help variable               
+        INTEGER :: i, j, ind                                 ! help variable               
         REAL(KIND=prec), DIMENSION(n) :: term 
         
                 
@@ -401,8 +452,7 @@ CONTAINS
         f = zero
         SELECT CASE(pnf2)
         
-!=======================================================================                             
-        
+!======================================================================= 
         CASE(1)               
         
 	        a4 = x(1)**2 - 2.0_prec * x(1) + x(2)**2 - 4.0_prec * x(2) + 4.0_prec
@@ -413,19 +463,16 @@ CONTAINS
 	        f = MAX( (a4 + a5) , (a5 + a6), (a4 + a6)  )    
         
 !=======================================================================
-        
         CASE(2)           
         
 	        f = 100.0_prec * ( ABS(x(1)) - x(2) ) 
 !=======================================================================
-        
         CASE(3)  
         
 	        f = 4.95_prec * ( ABS(x(2) - x(4)) )
 	        f = f + 90.0_prec * ( ABS(x(3)) - x(4) )
 	        f = f + 100.0_prec * ( ABS(x(1)) - x(2) ) 
 !=======================================================================
-        
         CASE(4)
         
 	        f = zero
@@ -433,14 +480,12 @@ CONTAINS
 	        f = f + ABS(x(i))                                   
 	        END DO  
 !=======================================================================
-                     
         CASE(5)
 	        f = zero
 	        DO j = 1, 20
 	        f = f + ABS( summa(x,j,n) )
 	        END DO 
-!=======================================================================                          
-        
+!=======================================================================   
         CASE(6) 
         
 	        f = 0.0_prec
@@ -458,20 +503,17 @@ CONTAINS
 	        END IF    
 	                                                           
 !=======================================================================
-        
         CASE(7)  
         
 	        f = 10.0_prec * ( x(1)**2 + x(2)**2 + ABS(x(2)) )
 	        f = f + 100.0_prec * ( ABS(x(1)) - x(2) ) 
 	                   
 !=======================================================================
-      
         CASE(8)  
         
             f = ABS( x(1) -x(2) ) + ABS( x(1) -x(3) ) 
                  
 !=======================================================================
-       
         CASE(9) 
         
 	        f = 0.0_prec 
@@ -519,23 +561,22 @@ CONTAINS
 	        f = f + a1
 	        ELSE 
 	        f = f + a2
-	        END IF                            
-!=======================================================================                     
-        
+	        END IF      
+	                              
+!=======================================================================
         CASE(10)
         
 	        f = zero
 	        DO i = 2, n
 	        f = f + ABS( x(i) - x(i-1) )
-	        END DO      
+	        END DO   
+	           
 !=======================================================================
-  
         CASE(11)
             
             f=2.0d+01*(-7.0_prec*x(1)+2.0_prec*abs(x(2))-abs(x(3))-1.8d+01)
         
 !=======================================================================
-
        CASE(12)
  
 		  f=0.0_prec
@@ -566,7 +607,6 @@ CONTAINS
 		  f = f + largest	
 			
 !=======================================================================
-
     CASE(13) 
     
 	      f=0.0_prec
@@ -577,9 +617,9 @@ CONTAINS
 	        f=f+abs(x(i))+abs(x(i+2))
 	      end do
 	      f=f+3.0_prec*abs(x(1))+abs(x(2))+abs(x(4))+abs(x(5))+abs(x(7))
-	      f=f +abs(x(9))+2.0_prec*abs(x(10))        
+	      f=f +abs(x(9))+2.0_prec*abs(x(10))     
+	         
 !=======================================================================
-    
     CASE(14) 
     
 	     f=0.0_prec
@@ -590,8 +630,44 @@ CONTAINS
 	        end do
 	        f=f+abs(apu )
 	      end do        
+	      
 !!=======================================================================
-                            
+    CASE(15) 
+    
+	      f=0.0_prec
+	      do i=1,n-1
+           a1 = (x(i)-2.0_prec)**2+(x(i+1)-1.0_prec)**2
+           a2 = exp(2.0_prec*x(i)-x(i+1))
+           f=f+MAX(a1,a2)
+          end do  
+                
+!!=======================================================================
+    CASE(16) 
+    
+	      f=0.0_prec
+	      do i=1,n
+           a2=0.0_prec
+           do j=1,n
+            a2 = a2+x(j)**2/(i+j-1)
+           end do
+           f=f+a2
+          end do    
+              
+!!=======================================================================
+    CASE(17) 
+    
+	      f=0.0_prec
+	      do i=1,n
+           a2=0.0_prec
+           do j=1,n
+            a2 = a2+x(j)/(i+j-1)
+           end do
+           a2=abs(a2)
+           f=f+a2
+          end do  
+                
+!!=======================================================================
+
         END SELECT
 
        
@@ -600,36 +676,35 @@ CONTAINS
     END SUBROUTINE myf2
 
     !************************************************************************
-    !*                                                                      *
-    !*     * SUBROUTINE myg1 *                                              *
-    !*                                                                      *
-    !*     Computation of the subgradient of the function f1.               *
-    !*                                                                      *
+    !*                                                                      
+    !*     * SUBROUTINE myg1 *                                             
+    !*                                                                       
+    !*     Computation of the subgradient of the function f1.               
+    !*                                                                     
     !************************************************************************
      
     SUBROUTINE myg1(n,x,g,iterm)
 
         USE param, ONLY : zero,one,two,large    ! Parameters.
-        USE initbem, ONLY : pnf1                ! Switch for convex component function 
-                                                ! f1 in academic test examples.
+        USE initbem, ONLY : pnf1                       ! Switch for convex component function f1 in academic test examples.
 
         IMPLICIT NONE
 
         ! Array Arguments
-        REAL(KIND=prec), DIMENSION(n), INTENT(IN) :: x  ! Vector of variables.
+        REAL(KIND=prec), DIMENSION(n), INTENT(IN) :: x    ! Vector of variables.
         REAL(KIND=prec), DIMENSION(n), INTENT(OUT) :: g ! Subgradient.
 
         ! Scalar Arguments
-        INTEGER, INTENT(IN) :: n                        ! Number of variables.
-        INTEGER, INTENT(OUT) :: iterm                   ! Cause of termination:
-                                                        !   0  - Everything is ok.
-                                                        !  -3  - Failure in subgradient calculations
-                                                        !        (assigned by the user).
+        INTEGER, INTENT(IN) :: n                      ! Number of variables.
+        INTEGER, INTENT(OUT) :: iterm             ! Cause of termination:
+                                                                        !   0  - Everything is ok.
+                                                                        !  -3  - Failure in subgradient calculations
+                                                                        !        (assigned by the user).
 
-        REAL(KIND=prec) :: a2,a1,a3              
+        REAL(KIND=prec) :: a2,a1,a3,a4              
         REAL(KIND=prec) :: apu                          ! help variable
         REAL(KIND=prec) :: largest                      ! help variable
-        INTEGER :: i, j, ind                            ! help variable
+        INTEGER :: i, j, ind, ka                            ! help variable
                 
         
         REAL(KIND=prec), DIMENSION(4) :: a    
@@ -640,15 +715,12 @@ CONTAINS
 
         SELECT CASE(pnf1)
         
-        
-!=======================================================================                                     
-        
+!======================================================================= 
         CASE(0)
         
 	        g = zero                
         
-!=======================================================================                                
-        
+!=======================================================================    
         CASE(1) 
         
 	        a1 = x(1)**4 + x(2)**2
@@ -702,8 +774,7 @@ CONTAINS
 	        g(2) = 0.0_prec
 	        END IF  
 	        
-!=======================================================================                    
-        
+!=======================================================================    
         CASE(3)  
         
 	        g(1) = 0.0_prec
@@ -767,8 +838,7 @@ CONTAINS
 	        g(4) = g(4) + 4.95_prec
 	        END IF 
 	        
-!=======================================================================                                    
-        
+!=======================================================================  
         CASE(4)
         
 	        g = zero 
@@ -788,8 +858,7 @@ CONTAINS
 	        g(ind) = n
 	        END IF  
 	                         
-!=======================================================================                                        
-        
+!=======================================================================    
         CASE(5)
         
 	        g = zero 
@@ -814,7 +883,6 @@ CONTAINS
 	        END IF 
         
 !=======================================================================
-        
         CASE(6)  
         
 	        g = 0.0_prec                 
@@ -828,7 +896,6 @@ CONTAINS
 	        END IF 
 	        
 !=======================================================================
-       
         CASE(7)  
         
 	        g = 0.0_prec                 
@@ -901,7 +968,6 @@ CONTAINS
 	        END IF                      
         
 !=======================================================================
-
         CASE(8)  
         
 	        g(1) = -8.0_prec + 8.0_prec * x(1)
@@ -956,25 +1022,22 @@ CONTAINS
 	        
 	        IF (ind == 4) THEN
 	        g(3) = g(3) - 10.0_prec 
-	        END IF                 
-        
+	        END IF 
+	                        
 !=======================================================================
-
         CASE(9)    
                              
 	        g(1) = 10.0_prec * x(1) - 16.0_prec
 	        g(2) = 10.0_prec * x(2) - 10.0_prec 
 	        g(3) = 10.0_prec * x(3) - 16.0_prec
-	        g(4) = 10.0_prec * x(4) - 10.0_prec                       
-        
-!=======================================================================                            
-        
+	        g(4) = 10.0_prec * x(4) - 10.0_prec   
+	                            
+!=======================================================================  
         CASE(10)
         
 	        g = two * x   
 	        
 !=======================================================================
-	  
 	    CASE(11)
 	                  
 		      g(1)=-33.0_prec
@@ -1021,7 +1084,6 @@ CONTAINS
 		      end if
 		      
 !=======================================================================
-	
 	    CASE(12) 
 	 
 		      do i=1,n
@@ -1041,8 +1103,7 @@ CONTAINS
 		         end if
 		       end do
 		       
-!=======================================================================		       
-		       
+!=======================================================================		
 	  CASE(13) 
 	    
 		     do i=1,n
@@ -1116,8 +1177,7 @@ CONTAINS
 		        end if
 		      end do   
 	
-!=======================================================================	        
-	
+!=======================================================================	   
 		   CASE(14)
 			 g = 0.0_prec
 		   
@@ -1153,10 +1213,71 @@ CONTAINS
 				g(j) = abs_sign(ind) * n / (ind+j-1)
 			 END DO    
          
-!=======================================================================	        
-               
+!=======================================================================	   
+		 CASE(15)
+		 
+		  g = 0.0_prec
+		   
+          g(1)=2.0_prec*(x(1)-2.0_prec)+2.0_prec*exp(2.0_prec*x(1)-x(2))
+          g(n)=2.0_prec*(x(n)-1.0_prec)-exp(2.0_prec*x(n-1)-x(n))
+          do i=2,n-1
+           a1=2.0_prec*(x(i)-1.0_prec)-exp(2.0_prec*x(i-1)-x(i))
+           a2=2.0_prec*(x(i)-2.0_prec)+2.0_prec*exp(2.0_prec*x(i)-x(i+1))
+           g(i) = a1+a2
+          end do
+          
+!=======================================================================
+		 CASE(16)
+		 
+		  g = 0.0_prec
+		   
+          a1=-1.0_prec
+          do i=1,n
+           a2=0.0_prec
+           do j=1,n
+            a2 = a2+x(j)**2/(i+j-1)
+           end do
+           if(a2 > a1) then
+            a1 = a2
+            ka=i
+           end if       
+          end do
+
+          do j=1,n
+           g(j)=2.0_prec*n*x(j)/(ka+j-1)
+          end do
+          
+!=======================================================================
+		 CASE(17)
+		 
+		  g = 0.0_prec
+		   
+          a1=-1.0_prec
+          do i=1,n
+           a2=0.0_prec
+           do j=1,n
+            a2 = a2+x(j)/(i+j-1)
+           end do
+           a3=abs(a2)
+           if(a3 > a1) then
+            a1=a3
+            a4=a2
+            ka=i
+           end if       
+          end do
+
+          if(a4 >= 0.0_prec) then
+            do i=1,n
+              g(i)=dble(n)/dble(ka+i-1)
+            end do 
+           else
+            do i=1,n
+              g(i)=-dble(n)/dble(ka+i-1)
+            end do 
+          end if  
+!=======================================================================
+
         END SELECT                      
-     
 
         RETURN
 
@@ -1164,39 +1285,37 @@ CONTAINS
     
 
     !************************************************************************
-    !*                                                                      *
-    !*     * SUBROUTINE myg2 *                                              *
-    !*                                                                      *
-    !*     Computation of the subgradient of the function f2.               *
-    !*                                                                      *
+    !*                                                                      
+    !*     * SUBROUTINE myg2 *                                              
+    !*                                                                      
+    !*     Computation of the subgradient of the function f2.            
+    !*                                                                      
     !************************************************************************
      
     SUBROUTINE myg2(n,x,g,iterm)
 
         USE param, ONLY : zero,one,two,large    ! Parameters.
-        USE initbem, ONLY : pnf2                ! Switch for convex component function 
-                                                ! f2 in academic test examples.
+        USE initbem, ONLY : pnf2                      ! Switch for convex component function  f2 in academic test examples.
 
         IMPLICIT NONE
 
         ! Array Arguments
-        REAL(KIND=prec), DIMENSION(n), INTENT(IN) :: x  ! Vector of variables.
+        REAL(KIND=prec), DIMENSION(n), INTENT(IN) :: x    ! Vector of variables.
         REAL(KIND=prec), DIMENSION(n), INTENT(OUT) :: g ! Subgradient.
 
         ! Scalar Arguments
-        INTEGER, INTENT(IN) :: n                        ! Number of variables.
-        INTEGER, INTENT(OUT) :: iterm                   ! Cause of termination:
-                                                        !   0  - Everything is ok.
-                                                        !  -3  - Failure in subgradient calculations
-                                                        !        (assigned by the user).
+        INTEGER, INTENT(IN) :: n                      ! Number of variables.
+        INTEGER, INTENT(OUT) :: iterm             ! Cause of termination:
+                                                                         !   0  - Everything is ok.
+                                                                         !  -3  - Failure in subgradient calculations
+                                                                         !        (assigned by the user).
 
         REAL(KIND=prec) :: a2,a1,a4,a5,a6                
         REAL(KIND=prec) :: apu                          ! help variable
         REAL(KIND=prec) :: largest                      ! help variable
-        INTEGER :: i, j, ind                            ! help variable
+        INTEGER :: i, j, ind                                  ! help variable
         REAL(KIND=prec), DIMENSION(n) :: term 
                                          
-
         iterm = 0
 
         SELECT CASE(pnf2)
@@ -1204,8 +1323,8 @@ CONTAINS
                 
     CASE(0)
         g = zero
+        
 !=======================================================================
-
 	CASE(1)                   
 	
 		g = 0.0_prec  
@@ -1232,9 +1351,8 @@ CONTAINS
 		g(2) = 6.0_prec * x(2) - 6.0_prec 
 		END IF                  
 		END IF 
-	 
-!=======================================================================                                         
-	
+		
+!=======================================================================     
 	CASE(2)             
 	
 		IF(x(1) <= 0) THEN
@@ -1243,10 +1361,9 @@ CONTAINS
 		g(1) = 100.0_prec
 		END IF
 		
-		g(2) = -100.0_prec                 
-	
+		g(2) = -100.0_prec    
+		             
 !=======================================================================
-      
 	CASE(3)  
 	
 		IF(x(1) <= 0.0_prec) THEN
@@ -1272,10 +1389,10 @@ CONTAINS
 		g(2) = g(2) + 4.95_prec 
 		g(4) = g(4) - 4.95_prec                 
 		END IF  
-	
+		
 !=======================================================================	
-	
 	CASE(4)
+	
 		g = zero
 		DO i = 1, n
 		IF (x(i) <= zero ) THEN 
@@ -1284,7 +1401,6 @@ CONTAINS
 		g(i) = one
 		END IF
 		END DO
-		
 !=======================================================================		
 	CASE(5)
 		g = zero 
@@ -1302,7 +1418,6 @@ CONTAINS
 		END DO  
 	
 !=======================================================================
-	
 	CASE(6)   
 		
 	DO i = 1, n
@@ -1314,7 +1429,6 @@ CONTAINS
 	END DO   
 	
 !=======================================================================
-
 	CASE(7)  
 	
 		g = 0.0_prec
@@ -1415,7 +1529,6 @@ CONTAINS
 		END IF                        
 	
 !=======================================================================
-                     
 	CASE(10)
 	
 		g = zero
@@ -1431,7 +1544,6 @@ CONTAINS
 		END DO   
 		
 !======================================================================= 
- 
 	 CASE(11)
                   
 	      g(1)=-140.0_prec
@@ -1490,7 +1602,6 @@ CONTAINS
 	      end do            
 	
 !=======================================================================
-
      CASE(13)
     
 	     do i=1,n
@@ -1560,8 +1671,7 @@ CONTAINS
 	          g(10)=g(10)-2.0_prec
 	      end if  
 
-!=======================================================================                    
-
+!=======================================================================       
        CASE(14)
     
 	      do i=1,n
@@ -1585,10 +1695,80 @@ CONTAINS
 	      end do         
 		                  
 !=======================================================================                    
-                 
+		 CASE(15)
+		  g = 0.0_prec
+		   
+          a1 = (x(1)-2.0_prec)**2+(x(2)-1.0_prec)**2
+          a2 = exp(2.0_prec*x(1)-x(2))
+
+          if (a1 >= a2) then
+              g(1)=2.0_prec*(x(1)-2.0_prec)
+            else
+              g(1)=2.0_prec*exp(2.0_prec*x(1)-x(2))
+          end if
+
+          a1 = (x(n-1)-2.0_prec)**2+(x(n)-1.0_prec)**2
+          a2 = exp(2.0_prec*x(n-1)-x(n))
+
+          if (a1 >= a2) then
+              g(n)=2.0_prec*(x(n)-1.0_prec)
+            else
+              g(n)=-exp(2.0_prec*x(n-1)-x(n))
+          end if
+
+          do i=2,n-1
+
+            a1 = (x(i-1)-2.0_prec)**2+(x(i)-1.0_prec)**2
+            a2 = exp(2.0_prec*x(i-1)-x(i))
+       
+            a5 = (x(i)-2.0_prec)**2+(x(i+1)-1.0_prec)**2
+            a6 = exp(2.0_prec*x(i)-x(i+1))
+       
+            if (a1 >= a2) then
+                g(i) = 2.0_prec*(x(i)-1.0_prec)
+              else
+                g(i) = -exp(2.0_prec*x(i-1)-x(i))
+            end if
+            if (a5 >= a6) then
+                g(i) = g(i)+2.0_prec*(x(i)-2.0_prec)
+              else
+                g(i) = g(i)+2.0_prec*exp(2.0_prec*x(i)-x(i+1))
+            end if
+          end do
+          
+!=======================================================================
+       CASE(16)
+    
+          do j=1,n
+           g(j)=0.0_prec
+           do i=1,n
+             g(j)=g(j)+2.0_prec*x(j)/(j+i-1)
+           end do
+          end do
+!=======================================================================   
+       CASE(17)
+    
+	      do i=1,n
+	        g(i)=0.0_prec
+	      end do  
+          do i=1,n
+           a2=0.0_prec
+           do j=1,n
+             a2 = a2+x(j)/(i+j-1)
+           end do          
+           if(a2 >= 0.0_prec) then
+              do j=1,n
+               g(j)=g(j)+1.0_prec/(i+j-1)
+              end do
+            else
+              do j=1,n
+               g(j)=g(j)-1.0_prec/(i+j-1) 
+              end do 
+           end if  
+          end do
+!=======================================================================  
+
         END SELECT                      
-     
-        
         RETURN
 
     END SUBROUTINE myg2
@@ -1599,13 +1779,13 @@ CONTAINS
         ! Calculates the sum used in f_1 and f_2 for parameter t_j.
         ! NOTICE: The dimension of 'y' has to be 'n'. 'j' needs to be an integer from interval [1,20]
         !
-        USE param, ONLY : zero,one    ! Parameters.
+        USE param, ONLY : zero,one                    ! Parameters.
         
         IMPLICIT NONE
                 
         REAL(KIND=prec), DIMENSION(:), INTENT(IN) :: y  ! a point where the function value of the DC component is calculated
-        INTEGER, INTENT(IN) ::  j                       ! determines the parameter t_j
-        INTEGER, INTENT(IN) ::  n                       ! dimension of the problem
+        INTEGER, INTENT(IN) ::  j                                       ! determines the parameter t_j
+        INTEGER, INTENT(IN) ::  n                                      ! dimension of the problem
                 
         REAL(KIND=prec) :: f, t, apu                    
         INTEGER :: i                                    
